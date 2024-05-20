@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.merakl.mmm.mapper.ConsultWayMapper">
+	
+	<resultMap type="ConsultWayVO" id="consultWayMap">
+		<result property="rowNo" column="ROW_NO"/>
+		<result property="seqNo" column="SEQ_NO"/>
+		<result property="memberSeq" column="MEMBER_SEQ"/>
+		<result property="orderNo" column="ORDER_NO"/>
+		<result property="wayName" column="WAY_NAME"/>
+		<result property="programYn" column="PROGRAM_YN"/>
+		<result property="createDate" column="CREATE_DATE"/>
+		<result property="updateUser" column="UPDATE_USER"/>
+		<result property="updateDate" column="UPDATE_DATE"/>
+		<result property="deleteYn" column="DELETE_YN"/>
+		<result property="deleteUser" column="DELETE_USER"/>
+		<result property="deleteDate" column="DELETE_DATE"/>
+	</resultMap>
+	
+	<select id="consultWaySequence" resultType="int">
+		SELECT NEXTVAL(CONSULT_WAY_SEQUENCE);
+	</select>
+	
+	<select id="consultWayList" parameterType="int" resultMap="consultWayMap">
+		SELECT *
+		FROM TB_CONSULT_WAY
+		WHERE 1 = 1
+		      AND MEMBER_SEQ = #{memberSeq}
+		ORDER BY ORDER_NO
+	</select>
+	
+	<select id="consultWay" parameterType="ConsultWayVO" resultMap="consultWayMap">
+		SELECT *
+		FROM TB_CONSULT_WAY
+		WHERE 1 = 1
+		      AND SEQ_NO = #{seqNo}
+	</select>
+	
+	<insert id="insertConsultWay" parameterType="ConsultWayVO">
+		INSERT INTO TB_CONSULT_WAY (
+			  SEQ_NO
+			, MEMBER_SEQ
+			, WAY_NAME
+			, PROGRAM_YN
+		) VALUES (
+			  #{seqNo}
+			, #{memberSeq}
+			, #{wayName}
+			, #{programYn}
+		)
+	</insert>
+	
+	<update id="updateConsultWay" parameterType="ConsultWayVO">
+		UPDATE TB_CONSULT_WAY
+		SET WAY_NAME = #{wayName}
+		  , PROGRAM_YN = #{programYn}
+		  , UPDATE_USER = #{updateUser}
+		  , UPDATE_DATE = NOW();
+		WHERE 1 = 1
+		      AND SEQ_NO = #{seqNo}   
+	</update>
+	
+	<update id="deleteConsultWay" parameterType="ConsultWayVO">
+		UPDATE TB_CONSULT_WAY
+		SET DELETE_YN = 'Y'
+		  , DELETE_DATE = NOW()
+		  , DELETE_USER = #{deleteUser}
+		WHERE 1 = 1
+		      AND SEQ_NO = #{seqNo} 
+	</update>
+	
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.merakl.mmm.mapper.AnswerMapper">
+	
+	<insert id="insertAllAnswers" parameterType="HashMap">
+		INSERT INTO TB_DIAGNOSIS_REPORT (
+			  DIAGNOSIS_SEQ
+			, PROJECT_SEQ
+			, MENTEE_MAIL1
+			, MENTEE_MAIL2
+			, RESULT
+		) VALUES
+		<foreach collection="answerList" item="answer" separator=",">
+		(
+			  #{answer.diagnosisSeq}
+			, #{answer.projectSeq}
+			, #{answer.menteeMail1}
+			, #{answer.menteeMail2}
+			, #{answer.result}
+		)
+		</foreach>
+	
+	</insert>
+	
+</mapper>

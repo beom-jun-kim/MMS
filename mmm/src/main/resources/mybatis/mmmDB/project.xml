@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.merakl.mmm.mapper.ProjectMapper">
+	
+	<resultMap type="ProjectVO" id="projectMap">
+		<result property="rowNo" column="ROW_NO"/>
+		<result property="seqNo" column="SEQ_NO"/>
+		<result property="customerSeq" column="CUSTOMER_SEQ"/>
+		<result property="waySeq" column="WAY_SEQ"/>
+		<result property="fieldSeq" column="FIELD_SEQ"/>
+		<result property="status" column="STATUS"/>
+		<result property="name" column="NAME"/>
+		<result property="startDate" column="START_DATE"/>
+		<result property="endDate" column="END_DATE"/>
+		<result property="createDate" column="CREATE_DATE"/>
+		<result property="updateUser" column="UPDATE_USER"/>
+		<result property="updateDate" column="UPDATE_DATE"/>
+		<result property="deleteYn" column="DELETE_YN"/>
+		<result property="deleteUser" column="DELETE_USER"/>
+		<result property="deleteDate" column="DELETE_DATE"/>
+	</resultMap>
+	
+	<select id="projectSequence" resultType="int">
+		SELECT NEXTVAL(PROJECT_SEQUENCE);
+	</select>
+	
+	<select id="projectList" parameterType="ProjectVO" resultMap="projectMap">
+		SELECT *
+		FROM TB_PROJECT
+		WHERE 1 = 1
+		      AND MEMBER_SEQ = #{memberSeq}
+		      AND DELETE_YN = 'N'
+		ORDER BY NAME		
+	</select>
+	
+	<select id="project" parameterType="ProjectVO" resultMap="projectMap">
+		SELECT *
+		FROM TB_PROJECT
+		WHERE 1 = 1
+		      AND SEQ_NO = #{seqNo} 
+	</select>
+	
+	<insert id="insertProject" parameterType="ProjectVO">
+		INSERT INTO TB_PROJECT (
+			  SEQ_NO
+			, CUSTOMER_SEQ
+			, WAY_SEQ
+			, STATUS
+			, NAME
+			, START_DATE
+			, END_DATE			  
+		) VALUES (
+			  #{seqNo}
+			, #{customerSeq}
+			, #{waySeq}
+			, #{status}
+			, #{name}
+			, #{startDate}
+			, #{endDate}
+		)
+	</insert>
+	
+	<update id="updateProject">
+		UPDATE 	TB_PROJECT
+		SET WAY_SEQ = #{waySeq}
+		  , FIELD_SEQ = #{fieldSeq}
+		  , STATUS = #{status}
+		  , NAME = #{name}
+		  , START_DATE = #{startDate}
+		  , END_DATE = #{endDate}
+		  , UPDATE_USER = #{updateUser}
+		  , UPDATE_DATE = NOW();
+		WHERE 1 = 1
+		      AND SEQ_NO = #{seqNo}   
+	</update>
+	
+	<update id="deleteProject">
+		UPDATE TB_PROJECT
+		SET DELETE_YN = 'Y'
+		  , DELETE_DATE = NOW()
+		  , DELETE_USER = #{deleteUser}
+		WHERE 1 = 1
+		      AND SEQ_NO = #{seqNo} 
+	</update>
+	
+	<insert id="insertProjectProgram" parameterType="ProjectVO">
+		INSERT INTO TB_PROJECT_PROGRAM (
+			  PROJECT_SEQ
+			, FIELD_SEQ
+			, COSULT_COUNT
+		) VALUES (
+			  #{seqNo}
+			, #{fieldSeq}
+			, 0
+		)	
+	</insert>
+	
+	<insert id="insertAllProjectProgram">
+		INSERT INTO TB_PROJECT_PROGRAM ( 
+			  PROJECT_SEQ
+			, FIELD_SEQ
+			, COSULT_COUNT
+		) 
+		SELECT #{seqNo} AS PROJECT_SEQ
+		     , SEQ_NO AS FIELD_SEQ
+		     , 0 AS CONSULT_COUNT
+		FROM TB_CONSULT_FIELD TCF 
+		WHERE 1 = 1
+		      AND WAY_SEQ =  #{waySeq}
+	</insert>
+	
+</mapper>

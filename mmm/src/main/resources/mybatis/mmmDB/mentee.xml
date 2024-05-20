@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.merakl.mmm.mapper.MenteeMapper">
+	
+	<resultMap type="MenteeVO" id="menteeMap">
+		<result property="rowNo" column="ROW_NO"/>
+		<result property="mail1" column="MAIL1"/>
+		<result property="mail2" column="MAIL2"/>
+		<result property="password" column="PASSWORD"/>
+		<result property="name" column="NAME"/>
+		<result property="createDate" column="CREATE_DATE"/>
+		<result property="updateUser" column="UPDATE_USER"/>
+		<result property="updateDate" column="UPDATE_DATE"/>
+		<result property="deleteYn" column="DELETE_YN"/>
+		<result property="deleteUser" column="DELETE_USER"/>
+		<result property="deleteDate" column="DELETE_DATE"/>
+	</resultMap>
+	
+	<select id="menteeSequence" resultType="int">
+		SELECT NEXTVAL(mentee_sequence);
+	</select>
+	
+	<select id="menteeList" parameterType="MenteeVO" resultMap="menteeMap">
+		SELECT *
+		FROM TB_MENTEE
+		WHERE 1 = 1
+		      AND PROJECT_SEQ = #{projectSeq}
+	</select>
+	
+	<select id="mentee" parameterType="MenteeVO" resultMap="menteeMap">
+		SELECT *
+		FROM TB_MENTEE
+		WHERE 1 = 1
+		      AND SEQ_NO = #{seqNo}
+	</select>
+	
+	<insert id="insertMentee" parameterType="MenteeVO">
+		INSERT INTO TB_MENTEE (
+			  SEQ_NO
+			, PROJECT_SEQ
+			, NAME
+			, POSITION
+			, MAIL1
+			, MAIL2
+			, PASSWORD
+		) VALUES (
+			  #{seqNo}
+			, #{projectSeq}
+			, #{name}
+			, #{position}
+			, #{mail1}
+			, #{mail2}
+			, SHA2(#{password}, 256)
+		)
+	</insert>
+	
+	<update id="updateMentee">
+		UPDATE 	TB_MENTEE
+		SET NAME = #{name}
+		  , MAIL1 = #{mail1}
+		  , MAIL2 = #{mail2}
+		  , PASSWORD = SHA2(#{password}, 256)
+		  , UPDATE_USER = #{updateUser}
+		  , UPDATE_DATE = NOW();
+		WHERE 1 = 1
+		      AND SEQ_NO = #{seqNo}   
+	</update>
+	
+	<update id="deleteMentee">
+		UPDATE TB_MENTEE
+		SET DELETE_YN = 'Y'
+		  , DELETE_DATE = NOW()
+		  , DELETE_USER = #{deleteUser}
+		WHERE 1 = 1
+		      AND SEQ_NO = #{seqNo} 
+	</update>
+	
+	<select id="checkAccount" parameterType="UserVO" resultMap="menteeMap">
+		SELECT *
+		FROM TB_MENTEE
+		WHERE 1 = 1
+		      AND MAIL1 = #{mail1}
+		      AND MAIL2 = #{mail2}
+		      AND PASSWORD = SHA2(#{password}, 256)
+	</select>
+	
+	<update id="initPassword">
+		UPDATE 	TB_MENTEE
+		SET PASSWORD = SHA2('qwer1234!@#$', 256)
+		  , UPDATE_USER = #{updateUser}
+		  , UPDATE_DATE = NOW();
+		WHERE 1 = 1
+		      AND SEQ_NO = #{seqNo}	
+	</update>
+	
+	<insert id="upsertMentee" parameterType="MenteeVO">
+		INSERT INTO TB_MENTEE (
+			  MAIL1
+			, MAIL2
+			, NAME
+			, PASSWORD	
+		) VALUES (
+			  #{mail1}
+			, #{mail2}
+			, #{name}
+			, SHA2(#{password}, 256)
+		)
+		ON DUPLICATE KEY UPDATE
+			  NAME = #{name}
+			, PASSWORD = SHA2(#{password}, 256)	
+	</insert>
+	
+	<insert id="addProject" parameterType="MenteeVO">
+		INSERT INTO TB_PROJECT_MENTEE (
+			  PROJECT_SEQ
+			, MENTEE_MAIL1
+			, MENTEE_MAIL2
+		) VALUES (
+			  #{projectSeq}
+			, #{mail1}
+			, #{mail2}
+		)	
+	</insert>
+</mapper>

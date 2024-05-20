@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.merakl.mmm.mapper.CustomerMapper">
+	
+	<resultMap type="CustomerVO" id="customerMap">
+		<result property="rowNo" column="ROW_NO"/>
+		<result property="seqNo" column="SEQ_NO"/>
+		<result property="memberSeq" column="MEMBER_SEQ"/>
+		<result property="businessItems" column="BUSINESS_ITEMS"/>
+		<result property="businessType" column="BUSINESS_TYPE"/>
+		<result property="name" column="NAME"/>
+		<result property="startDate" column="START_DATE"/>
+		<result property="phone" column="PHONE"/>
+		<result property="fax" column="NAFAXME"/>
+		<result property="businessNo" column="BUSINESS_NO"/>
+		<result property="address1" column="ADDRESS1"/>
+		<result property="address2" column="ADDRESS2"/>
+		<result property="zipCode" column="ZIP_CODE"/>
+		<result property="ownerName" column="OWNER_NAME"/>
+		<result property="ownerId" column="OWNER_ID"/>
+		<result property="ownerBirthDate" column="OWNER_BIRTH_DATE"/>
+		<result property="ownerPhone" column="OWNER_PHONE"/>
+		<result property="ownerMail1" column="OWNER_MAIL1"/>
+		<result property="ownerMail2" column="OWNER_MAIL2"/>
+		<result property="createDate" column="CREATE_DATE"/>
+		<result property="updateUser" column="UPDATE_USER"/>
+		<result property="updateDate" column="UPDATE_DATE"/>
+		<result property="deleteYn" column="DELETE_YN"/>
+		<result property="deleteUser" column="DELETE_USER"/>
+		<result property="deleteDate" column="DELETE_DATE"/>
+	</resultMap>
+	
+	<select id="customerSequence" resultType="int">
+		SELECT NEXTVAL(CUSTOMER_SEQUENCE);
+	</select>
+	
+	<select id="customerList" parameterType="CustomerVO" resultMap="customerMap">
+		SELECT *
+		FROM TB_CUSTOMER
+		WHERE 1 = 1
+		      AND MEMBER_SEQ = #{memberSeq}
+		      AND DELETE_YN = 'N'
+		 ORDER BY NAME		
+	</select>
+	
+	<select id="customer" parameterType="CustomerVO" resultMap="customerMap">
+		SELECT *
+		FROM TB_CUSTOMER
+		WHERE 1 = 1
+		      AND SEQ_NO = #{seqNo}
+	</select>
+	
+	<insert id="insertCustomer" parameterType="CustomerVO">
+		INSERT INTO TB_CUSTOMER (
+			  SEQ_NO
+			, MEMBER_SEQ
+			, BUSINESS_ITEMS
+			, BUSINESS_TYPE
+			, NAME
+			, BUSINESS_NO
+			, START_DATE
+			, PHONE
+			, FAX
+			, ADDRESS1
+			, ADDRESS2
+			, ZIP_CODE
+			, OWNER_NAME
+			, OWNER_ID
+			, OWNER_BIRTH_DATE
+			, OWNER_PHONE
+			, OWNER_MAIL1
+			, OWNER_MAIL2			  
+		) VALUES (
+			  #{seqNo}
+			, #{memberSeq}
+			, #{businessItems}
+			, #{businessType}
+			, #{name}
+			, #{businessNo}
+			, #{startDate}
+			, #{phone}
+			, #{fax}
+			, #{address1}
+			, #{address2}
+			, #{zipCode}
+			, #{ownerName}
+			, #{ownerId}
+			, #{ownerBirthDate}
+			, #{ownerPhone}
+			, #{ownerMail1}
+			, #{ownerMail2}
+		)
+	</insert>
+	
+	<update id="updateCustomer">
+		UPDATE 	TB_CUSTOMER
+		SET BUSINESS_ITEMS = #{businessNo}
+		  , BUSINESS_TYPE = #{businessType}
+		  , NAME = #{name}
+		  , BUSINESS_NO = #{businessNo}
+		  , START_DATE = #{startDate}
+		  , PHONE = #{phone}
+		  , FAX = #{fax}
+		  , ADDRESS1 = #{address1}
+		  , ADDRESS2 = #{address2}
+		  , ZIP_CODE = #{zipCode}
+		  , OWNER_NAME = #{ownerName}
+		  , OWNER_ID = #{ownerId}
+		  , OWNER_BIRTH_DATE = #{ownerBirthDate}
+		  , OWNER_PHONE = #{ownerPhone}
+		  , OWNER_MAIL1 = #{ownerMail1}
+		  , OWNER_MAIL2 = #{ownerMail2}
+		  , UPDATE_USER = #{updateUser}
+		  , UPDATE_DATE = NOW();
+		WHERE 1 = 1
+		      AND SEQ_NO = #{seqNo}   
+	</update>
+	
+	<update id="deleteCustomer">
+		UPDATE TB_CUSTOMER
+		SET DELETE_YN = 'Y'
+		  , DELETE_DATE = NOW()
+		  , DELETE_USER = #{deleteUser}
+		WHERE 1 = 1
+		      AND SEQ_NO = #{seqNo} 
+	</update>
+	
+</mapper>
