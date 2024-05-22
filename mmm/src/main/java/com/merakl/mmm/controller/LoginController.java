@@ -17,8 +17,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 @RestController
 @RequestMapping(value = "/login")
 public class LoginController {
