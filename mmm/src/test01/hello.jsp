@@ -19,6 +19,7 @@
 	<jsp:include page="<%= navInc %>"></jsp:include>
 	
 	<div>test</div>
+	<div>test2</div>
 	
     <jsp:include page="<%= footerInc %>"></jsp:include>
     
